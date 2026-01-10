@@ -27,6 +27,9 @@
 	prae.plasma_types = list(PLASMA_CATECHOLAMINE)
 	prae.claw_type = CLAW_TYPE_SHARP
 
+	prae.damage_modifier -= XENO_DAMAGE_MOD_SMALL
+	prae.attack_speed_modifier -= 2
+
 	prae.recalculate_everything()
 
 /datum/behavior_delegate/praetorian_dancer
@@ -62,8 +65,6 @@
 		return
 
 	if (!ismob(target_atom))
-		apply_cooldown_override(impale_click_miss_cooldown)
-		update_button_icon()
 		return
 
 	if (!isxeno_human(target_atom) || dancer_user.can_not_harm(target_atom))
@@ -141,7 +142,7 @@
 
 	behavior.dodge_activated = TRUE
 	button.icon_state = "template_active"
-	to_chat(dodge_user, SPAN_XENOHIGHDANGER("We can now dodge through mobs!"))
+	owner.balloon_alert(owner, "We can now dodge through mobs!", text_color ="#75005c")
 	dodge_user.speed_modifier -= speed_buff_amount
 	dodge_user.add_temp_pass_flags(PASS_MOB_THRU)
 	dodge_user.recalculate_speed()
@@ -167,7 +168,7 @@
 		dodge_remove.speed_modifier += speed_buff_amount
 		dodge_remove.remove_temp_pass_flags(PASS_MOB_THRU)
 		dodge_remove.recalculate_speed()
-		to_chat(dodge_remove, SPAN_XENOHIGHDANGER("We can no longer dodge through mobs!"))
+		owner.balloon_alert(owner, "We can no longer dodge through mobs!", text_color ="#75005c")
 
 /datum/action/xeno_action/activable/prae_tail_trip/use_ability(atom/target_atom)
 	var/mob/living/carbon/xenomorph/dancer_user = owner
@@ -179,8 +180,6 @@
 		return
 
 	if (!ismob(target_atom))
-		apply_cooldown_override(tail_click_miss_cooldown)
-		update_button_icon()
 		return
 
 	if (!isxeno_human(target_atom) || dancer_user.can_not_harm(target_atom))
